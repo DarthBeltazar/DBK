@@ -17,6 +17,9 @@ repositories {
         name = "meteor-maven-snapshots"
         url = uri("https://maven.meteordev.org/snapshots")
     }
+    flatDir {
+        dirs("baritoneAPI-lib") //baritone api from https://github.com/cabaletta/baritone
+    }
 }
 
 dependencies {
@@ -27,6 +30,9 @@ dependencies {
 
     // Meteor
     modImplementation("meteordevelopment:meteor-client:${properties["minecraft_version"] as String}-SNAPSHOT")
+
+    // Baritone
+    modImplementation("baritone-api-fabric:baritone-api-fabric:1.13.1")
 }
 
 tasks {

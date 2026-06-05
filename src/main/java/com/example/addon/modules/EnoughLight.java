@@ -1,6 +1,6 @@
 package com.example.addon.modules;
 
-import com.example.addon.AddonTemplate;
+import com.example.addon.Addon;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -10,7 +10,6 @@ import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.world.LightType;
 
 import java.util.ArrayList;
@@ -74,14 +73,14 @@ public class EnoughLight extends Module {
     );
 
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
-        .name("shapemode")
+        .name("shape-mode")
         .defaultValue(ShapeMode.Both)
         .build()
     );
 
 
     public EnoughLight() {
-        super(AddonTemplate.DBK, "enough-light", "An module, which highlights mob spawn places");
+        super(Addon.DBK, "enough-light", "An module, which highlights mob spawn places");
     }
 
 

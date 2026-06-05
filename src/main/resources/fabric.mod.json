@@ -8,13 +8,14 @@
     "DarthBeltazar"
   ],
   "contact": {
-    "phone": "8 800 555 35 35"
+    "phone": "8 800 555 35 35",
+    "sources": "https://github.com/GeorgievAlexandr/DBK"
   },
-  "icon": "assets/template/icon.png",
+  "icon": "assets/dbk/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "com.example.addon.AddonTemplate"
+      "com.example.addon.Addon"
     ]
   },
   "mixins": [
