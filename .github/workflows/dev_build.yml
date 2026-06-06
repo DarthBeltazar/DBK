@@ -6,7 +6,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
@@ -24,7 +24,7 @@ jobs:
           java-version: 21
 
       - name: Build with Gradle
-        run: ./gradlew.bat build
+        run: ./gradlew build
 
       - name: Release
         uses: marvinpinto/action-automatic-releases@latest
