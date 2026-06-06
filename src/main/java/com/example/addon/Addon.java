@@ -1,5 +1,6 @@
 package com.example.addon;
 
+import com.example.addon.modules.DBKAirPlace;
 import com.example.addon.modules.EnoughLight;
 import com.example.addon.modules.WoodMine;
 import com.mojang.logging.LogUtils;
@@ -22,6 +23,7 @@ public class Addon extends MeteorAddon {
         // Modules
         Modules.get().add(new EnoughLight());
         Modules.get().add(new WoodMine());
+        Modules.get().add(new DBKAirPlace());
 
         // Commands
         //Commands.add(new CommandExample());
