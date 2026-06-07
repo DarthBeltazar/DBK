@@ -79,19 +79,17 @@ public class DBKAirPlace extends Module{
 
     private HitResult hitResult;
     private int delay;
-    private double rangeValue;
 
     @Override
     public void onActivate(){
         delay = 0;
-        rangeValue = range.get();
     }
 
     @EventHandler
     private void onTick(TickEvent.Post event){
         delay++;
         if(mc.player == null || mc.getCameraEntity() == null) return;
-        hitResult = mc.getCameraEntity().raycast(rangeValue, 0, false);
+        hitResult = mc.getCameraEntity().raycast(range.get(), 0, false);
         if(!(hitResult instanceof BlockHitResult blockHitResult) || !(mc.player.getMainHandStack().getItem() instanceof BlockItem)) return;
 
         if(delay < placeDelay.get()) return;
@@ -116,8 +114,8 @@ public class DBKAirPlace extends Module{
     @EventHandler
     private void onMouseScroll(MouseScrollEvent event) {
         if (scrollSensitivity.get() > 0 && isActive()) {
-            rangeValue += event.value * 0.25 * (scrollSensitivity.get());
-            if (rangeValue > 5.5) rangeValue = 5.5;
+            range.set(range.get() + event.value * 0.25 * (scrollSensitivity.get()));
+            if (range.get() > 5.5) range.set(5.5);
 
             event.cancel();
         }
