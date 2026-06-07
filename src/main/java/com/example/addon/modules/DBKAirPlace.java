@@ -1,5 +1,6 @@
 package com.example.addon.modules;
 
+import meteordevelopment.meteorclient.events.meteor.MouseScrollEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -38,6 +39,14 @@ public class DBKAirPlace extends Module{
         .build()
     );
 
+    private final Setting<Double> scrollSensitivity = sgRender.add(new DoubleSetting.Builder()
+        .name("scroll-sensitivity")
+        .description("Allows you to change range.")
+        .defaultValue(1)
+        .min(0)
+        .build()
+    );
+
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
         .name("render")
         .defaultValue(true)
@@ -68,20 +77,21 @@ public class DBKAirPlace extends Module{
         super(Addon.DBK, "DBK-air-place", "Places blocks in air");
     }
 
-
     private HitResult hitResult;
     private int delay;
+    private double rangeValue;
 
     @Override
     public void onActivate(){
         delay = 0;
+        rangeValue = range.get();
     }
 
     @EventHandler
     private void onTick(TickEvent.Post event){
         delay++;
         if(mc.player == null || mc.getCameraEntity() == null) return;
-        hitResult = mc.getCameraEntity().raycast(range.get(), 0, false);
+        hitResult = mc.getCameraEntity().raycast(rangeValue, 0, false);
         if(!(hitResult instanceof BlockHitResult blockHitResult) || !(mc.player.getMainHandStack().getItem() instanceof BlockItem)) return;
 
         if(delay < placeDelay.get()) return;
@@ -101,5 +111,15 @@ public class DBKAirPlace extends Module{
         if (mc.world == null) return;
         if (!render.get() || !(hitResult instanceof BlockHitResult blockHitResult) || !mc.world.getBlockState(blockHitResult.getBlockPos()).isReplaceable()) return;
         event.renderer.box(blockHitResult.getBlockPos(), fColor.get(), eColor.get(), shapeMode.get(), 0);
+    }
+
+    @EventHandler
+    private void onMouseScroll(MouseScrollEvent event) {
+        if (scrollSensitivity.get() > 0 && isActive()) {
+            rangeValue += event.value * 0.25 * (scrollSensitivity.get());
+            if (rangeValue > 5.5) rangeValue = 5.5;
+
+            event.cancel();
+        }
     }
 }

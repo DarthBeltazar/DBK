@@ -24,12 +24,6 @@ public class Addon extends MeteorAddon {
         Modules.get().add(new EnoughLight());
         Modules.get().add(new WoodMine());
         Modules.get().add(new DBKAirPlace());
-
-        // Commands
-        //Commands.add(new CommandExample());
-
-        // HUD
-        //Hud.get().register(HudExample.INFO);
     }
 
     @Override
