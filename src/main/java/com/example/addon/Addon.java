@@ -2,6 +2,7 @@ package com.example.addon;
 
 import com.example.addon.modules.DBKAirPlace;
 import com.example.addon.modules.EnoughLight;
+import com.example.addon.modules.PointsAutoWalk;
 import com.example.addon.modules.WoodMine;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
@@ -24,6 +25,7 @@ public class Addon extends MeteorAddon {
         Modules.get().add(new EnoughLight());
         Modules.get().add(new WoodMine());
         Modules.get().add(new DBKAirPlace());
+        Modules.get().add(new PointsAutoWalk());
     }
 
     @Override
@@ -38,6 +40,6 @@ public class Addon extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("AlexandrGeorgiev", "DBK");
+        return new GithubRepo("DarthBeltazar", "DBK");
     }
 }

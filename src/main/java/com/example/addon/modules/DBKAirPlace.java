@@ -39,7 +39,7 @@ public class DBKAirPlace extends Module{
         .build()
     );
 
-    private final Setting<Double> scrollSensitivity = sgRender.add(new DoubleSetting.Builder()
+    private final Setting<Double> scrollSensitivity = sgGeneral.add(new DoubleSetting.Builder()
         .name("scroll-sensitivity")
         .description("Allows you to change range.")
         .defaultValue(1)
