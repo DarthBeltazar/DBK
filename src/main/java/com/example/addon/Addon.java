@@ -1,9 +1,6 @@
 package com.example.addon;
 
-import com.example.addon.modules.DBKAirPlace;
-import com.example.addon.modules.EnoughLight;
-import com.example.addon.modules.PointsAutoWalk;
-import com.example.addon.modules.WoodMine;
+import com.example.addon.modules.*;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -26,6 +23,7 @@ public class Addon extends MeteorAddon {
         Modules.get().add(new WoodMine());
         Modules.get().add(new DBKAirPlace());
         Modules.get().add(new PointsAutoWalk());
+        Modules.get().add(new AutoFirework());
     }
 
     @Override
