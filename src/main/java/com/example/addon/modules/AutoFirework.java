@@ -8,6 +8,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
 
 public class AutoFirework extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -54,8 +55,8 @@ public class AutoFirework extends Module {
         tickCounter = 0;
 
         if (stopWhenFastEnough.get()) {
-            double horizontalSpeed = Math.hypot(mc.player.getVelocity().x, mc.player.getVelocity().z);
-            if (horizontalSpeed >= minSpeedThreshold.get()) return;
+            double speed = mc.player.getVelocity().length();
+            if (speed*20 >= minSpeedThreshold.get()) return;
         }
 
         int fireworkSlot = findFireworkInHotbar();
