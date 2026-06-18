@@ -2,8 +2,6 @@ package com.example.addon.modules;
 
 import com.example.addon.Addon;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.IntSetting;
-import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
@@ -15,7 +13,6 @@ import net.minecraft.item.Items;
 
 
 public class AutoBottle extends Module {
-    private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
 
     public AutoBottle(){
         super(Addon.DBK, "auto-bottle", "Automatically drinks ominous bottles for raid farming");
