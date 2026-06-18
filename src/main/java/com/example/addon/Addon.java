@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 public class Addon extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
     public static final Category DBK = new Category("DBK");
-    public static final HudGroup HUD_GROUP = new HudGroup("Example");
+
 
     @Override
     public void onInitialize() {
