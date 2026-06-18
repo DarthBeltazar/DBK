@@ -4,6 +4,8 @@ import com.example.addon.Addon;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.player.FindItemResult;
+import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -59,21 +61,19 @@ public class AutoFirework extends Module {
             if (speed*20 >= minSpeedThreshold.get()) return;
         }
 
-        int fireworkSlot = findFireworkInHotbar();
-        if (fireworkSlot != -1) {
-            int prevSlot = mc.player.getInventory().selectedSlot;
-            mc.player.getInventory().selectedSlot = fireworkSlot;
-            mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
-            mc.player.getInventory().selectedSlot = prevSlot;
-        }
+        useFirework();
     }
 
-    private int findFireworkInHotbar() {
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = mc.player.getInventory().getStack(i);
-            if (stack.getItem() == Items.FIREWORK_ROCKET) return i;
+    private void useFirework() {
+        FindItemResult firework = InvUtils.find(itemStack -> itemStack.getItem() == Items.FIREWORK_ROCKET);
+        if (!firework.found()){
+            info("No firework found");
+            return;
         }
-        info("No firework found");
-        return -1;
+        InvUtils.swap(firework.slot(), true);
+        if (mc.interactionManager != null) {
+            mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+        }
+        InvUtils.swapBack();
     }
 }

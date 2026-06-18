@@ -24,6 +24,7 @@ public class Addon extends MeteorAddon {
         Modules.get().add(new DBKAirPlace());
         Modules.get().add(new PointsAutoWalk());
         Modules.get().add(new AutoFirework());
+        Modules.get().add(new AutoBottle());
     }
 
     @Override
