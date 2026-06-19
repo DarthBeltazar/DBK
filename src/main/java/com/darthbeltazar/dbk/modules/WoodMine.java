@@ -23,13 +23,6 @@ public class WoodMine extends Module {
     }
 
     @EventHandler
-    private void onFinishMining() {
-        if (mineProcess != null && !mineProcess.isActive() && isMining) {
-            isMining = false;
-        }
-    }
-
-    @EventHandler
     private void onTick(TickEvent.Post event) {
         if (mc.player == null || mc.world == null) return;
         if (mineProcess == null || BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().isPathing()) {

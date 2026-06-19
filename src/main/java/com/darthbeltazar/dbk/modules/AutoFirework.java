@@ -55,8 +55,8 @@ public class AutoFirework extends Module {
         tickCounter = 0;
 
         if (stopWhenFastEnough.get()) {
-            double speed = mc.player.getVelocity().length();
-            if (speed * 20 >= minSpeedThreshold.get()) return;
+            double speed = mc.player.getVelocity().length() * 20; //because velocity is in blocks per tick
+            if (speed >= minSpeedThreshold.get()) return;
         }
 
         useFirework();

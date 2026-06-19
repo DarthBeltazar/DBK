@@ -59,6 +59,11 @@ public class PointsAutoWalk extends BoxHighlightSettings {
 
     @Override
     public void onActivate() {
+        if (BaritoneAPI.getProvider().getPrimaryBaritone() == null) {
+            error("Baritone is not discovered. Please install baritone");
+            toggle();
+            return;
+        }
         baritone = BaritoneAPI.getProvider();
         index = 0;
         isPatching = false;

@@ -1,3 +1,6 @@
+/**
+ * Template for modules with settings
+ */
 package com.darthbeltazar.dbk.assets;
 
 import meteordevelopment.meteorclient.renderer.ShapeMode;
