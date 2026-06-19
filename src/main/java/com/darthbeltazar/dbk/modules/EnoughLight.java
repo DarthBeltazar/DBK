@@ -56,26 +56,6 @@ public class EnoughLight extends BoxHighlightSettings {
         .build()
     );
 
-
-    private final Setting<SettingColor> fColor = sgRender.add(new ColorSetting.Builder()
-        .name("fill-color")
-        .description("The color of the marker.")
-        .defaultValue(new Color(255, 10, 10, 15))
-        .build()
-    );
-
-    private final Setting<SettingColor> eColor = sgRender.add(new ColorSetting.Builder()
-        .name("edge-color")
-        .description("The color of the marker.")
-        .defaultValue(new Color(255, 10, 10, 200))
-        .build()
-    );
-
-    private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
-        .name("shape-mode")
-        .defaultValue(ShapeMode.Both)
-        .build()
-    );
     private final List<BlockPos> spawnBlocks = new ArrayList<BlockPos>();
     private int timer = 0;
 

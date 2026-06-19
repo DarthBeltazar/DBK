@@ -68,6 +68,7 @@ public class AutoBottle extends Module {
     private void useBottle() {
         if (!isDrinking) {
             mc.options.useKey.setPressed(false);
+            InvUtils.swapBack();
             return;
         }
 
@@ -76,7 +77,7 @@ public class AutoBottle extends Module {
             info("No bottle found");
             return;
         }
-        InvUtils.swap(bottle.slot(), false);
+        InvUtils.swap(bottle.slot(), true);
 
         mc.options.useKey.setPressed(true);
     }
