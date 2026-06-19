@@ -15,7 +15,7 @@
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "com.example.addon.Addon"
+      "com.darthbeltazar.dbk.Addon"
     ]
   },
   "custom": {
@@ -23,7 +23,9 @@
   },
   "depends": {
     "java": ">=21",
-    "minecraft": ["${mc_version}"],
+    "minecraft": [
+      "${mc_version}"
+    ],
     "meteor-client": "*"
   }
 }

@@ -1,6 +1,6 @@
-package com.example.addon.modules;
+package com.darthbeltazar.dbk.modules;
 
-import com.example.addon.Addon;
+import com.darthbeltazar.dbk.Addon;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -51,11 +51,10 @@ public class EnoughLight extends Module {
     );
 
     private final Setting<Boolean> checkAir = sgGeneral.add(new BoolSetting.Builder()
-    .name("check-air")
-    .defaultValue(true)
-    .build()
+        .name("check-air")
+        .defaultValue(true)
+        .build()
     );
-
 
 
     private final Setting<SettingColor> fColor = sgRender.add(new ColorSetting.Builder()
@@ -77,15 +76,12 @@ public class EnoughLight extends Module {
         .defaultValue(ShapeMode.Both)
         .build()
     );
-
+    private List<BlockPos> spawnBlocks = new ArrayList<BlockPos>();
+    private int timer = 0;
 
     public EnoughLight() {
         super(Addon.DBK, "enough-light", "An module, which highlights mob spawn places");
     }
-
-
-    private List<BlockPos> spawnBlocks = new ArrayList<BlockPos>();
-    private int timer = 0;
 
     @Override
     public void onActivate() {
@@ -98,23 +94,23 @@ public class EnoughLight extends Module {
         spawnBlocks.clear();
     }
 
-    private void updateBlockPos(){
+    private void updateBlockPos() {
         spawnBlocks.clear();
         int r = scanRadius.get();
         int h = scanHeight.get();
-        for(BlockPos pos : BlockPos.iterateOutwards(mc.player.getBlockPos(), r, h, r)){
-            if(!mc.world.isInBuildLimit(pos)){
+        for (BlockPos pos : BlockPos.iterateOutwards(mc.player.getBlockPos(), r, h, r)) {
+            if (!mc.world.isInBuildLimit(pos)) {
                 continue;
             }
-            if(!mc.world.isAir(pos) || !mc.world.getBlockState(pos.down()).isSolidBlock(mc.world, pos.down())){
+            if (!mc.world.isAir(pos) || !mc.world.getBlockState(pos.down()).isSolidBlock(mc.world, pos.down())) {
                 continue;
             }
-            if(checkAir.get()){
-                if (!mc.world.isAir(pos.up())){
+            if (checkAir.get()) {
+                if (!mc.world.isAir(pos.up())) {
                     continue;
                 }
             }
-            if(mc.world.getLightLevel(LightType.BLOCK, pos) > 0){
+            if (mc.world.getLightLevel(LightType.BLOCK, pos) > 0) {
                 continue;
             }
 
@@ -134,7 +130,7 @@ public class EnoughLight extends Module {
 
     @EventHandler
     private void onRender3d(Render3DEvent event) {
-        if(spawnBlocks.isEmpty()) return;
+        if (spawnBlocks.isEmpty()) return;
         for (BlockPos pos : spawnBlocks) {
             event.renderer.box(pos, fColor.get(), eColor.get(), shapeMode.get(), 0);
         }

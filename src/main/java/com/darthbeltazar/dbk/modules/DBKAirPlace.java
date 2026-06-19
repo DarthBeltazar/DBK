@@ -1,12 +1,12 @@
-package com.example.addon.modules;
+package com.darthbeltazar.dbk.modules;
 
+import com.darthbeltazar.dbk.Addon;
 import meteordevelopment.meteorclient.events.meteor.MouseScrollEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import com.example.addon.Addon;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
@@ -19,7 +19,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class DBKAirPlace extends Module{
+public class DBKAirPlace extends Module {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
     private final SettingGroup sgRender = this.settings.createGroup("Render");
 
@@ -72,32 +72,32 @@ public class DBKAirPlace extends Module{
         .defaultValue(ShapeMode.Lines)
         .build()
     );
-
-    public DBKAirPlace(){
-        super(Addon.DBK, "DBK-air-place", "Places blocks in air");
-    }
-
     private HitResult hitResult;
     private int delay;
 
+    public DBKAirPlace() {
+        super(Addon.DBK, "DBK-air-place", "Places blocks in air");
+    }
+
     @Override
-    public void onActivate(){
+    public void onActivate() {
         delay = 0;
     }
 
     @EventHandler
-    private void onTick(TickEvent.Post event){
+    private void onTick(TickEvent.Post event) {
         delay++;
-        if(mc.player == null || mc.getCameraEntity() == null) return;
+        if (mc.player == null || mc.getCameraEntity() == null) return;
         hitResult = mc.getCameraEntity().raycast(range.get(), 0, false);
-        if(!(hitResult instanceof BlockHitResult blockHitResult) || !(mc.player.getMainHandStack().getItem() instanceof BlockItem)) return;
+        if (!(hitResult instanceof BlockHitResult blockHitResult) || !(mc.player.getMainHandStack().getItem() instanceof BlockItem))
+            return;
 
-        if(delay < placeDelay.get()) return;
+        if (delay < placeDelay.get()) return;
 
-        if(mc.options.useKey.isPressed()){
-            mc.player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, new BlockPos(0,0,0), Direction.DOWN));
-            mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(Hand.OFF_HAND, blockHitResult, mc.player.currentScreenHandler.getRevision()+2));
-            mc.player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, new BlockPos(0,0,0), Direction.DOWN));
+        if (mc.options.useKey.isPressed()) {
+            mc.player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, new BlockPos(0, 0, 0), Direction.DOWN));
+            mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(Hand.OFF_HAND, blockHitResult, mc.player.currentScreenHandler.getRevision() + 2));
+            mc.player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, new BlockPos(0, 0, 0), Direction.DOWN));
 
             mc.player.swingHand(Hand.MAIN_HAND);
             delay = 0;
@@ -105,9 +105,10 @@ public class DBKAirPlace extends Module{
     }
 
     @EventHandler
-    private void onRender3d(Render3DEvent event){
+    private void onRender3d(Render3DEvent event) {
         if (mc.world == null) return;
-        if (!render.get() || !(hitResult instanceof BlockHitResult blockHitResult) || !mc.world.getBlockState(blockHitResult.getBlockPos()).isReplaceable()) return;
+        if (!render.get() || !(hitResult instanceof BlockHitResult blockHitResult) || !mc.world.getBlockState(blockHitResult.getBlockPos()).isReplaceable())
+            return;
         event.renderer.box(blockHitResult.getBlockPos(), fColor.get(), eColor.get(), shapeMode.get(), 0);
     }
 

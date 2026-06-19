@@ -1,6 +1,6 @@
-package com.example.addon.modules;
+package com.darthbeltazar.dbk.modules;
 
-import com.example.addon.Addon;
+import com.darthbeltazar.dbk.Addon;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
@@ -13,11 +13,11 @@ import net.minecraft.item.Items;
 
 public class AutoBottle extends Module {
 
-    public AutoBottle(){
+    private boolean isDrinking;
+
+    public AutoBottle() {
         super(Addon.DBK, "auto-bottle", "Automatically drinks ominous bottles for raid farming");
     }
-
-    private boolean isDrinking;
 
     @Override
     public void onActivate() {
@@ -40,13 +40,13 @@ public class AutoBottle extends Module {
     }
 
     private void useBottle() {
-        if(!isDrinking) {
+        if (!isDrinking) {
             mc.options.useKey.setPressed(false);
             return;
         }
 
         FindItemResult bottle = InvUtils.find(itemStack -> itemStack.getItem() == Items.OMINOUS_BOTTLE);
-        if (!bottle.found()){
+        if (!bottle.found()) {
             info("No bottle found");
             return;
         }

@@ -1,11 +1,9 @@
-package com.example.addon.modules;
+package com.darthbeltazar.dbk.modules;
 
-import baritone.BaritoneProvider;
 import baritone.api.BaritoneAPI;
 import baritone.api.IBaritoneProvider;
 import baritone.api.pathing.goals.GoalBlock;
-import com.example.addon.Addon;
-
+import com.darthbeltazar.dbk.Addon;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -23,31 +21,29 @@ import java.util.List;
 public class PointsAutoWalk extends Module {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
     private final SettingGroup sgRender = this.settings.createGroup("Render");
-    private List<BlockPos> points = new ArrayList<>();
-    private int index;
-    boolean isPatching;
-    private IBaritoneProvider baritone;
-
     private final Setting<String> pointsString = sgGeneral.add(new StringSetting.Builder()
         .name("points")
-        .description("Coordinates in format x y z; x y z")
+        .description("Coordinates in format x y z (separator) x y z")
         .build()
     );
-
+    private final Setting<String> separator = sgGeneral.add(new StringSetting.Builder()
+        .name("separator")
+        .description("Symbol which separates coordinates")
+        .defaultValue(";")
+        .build()
+    );
     private final Setting<SettingColor> fColor = sgRender.add(new ColorSetting.Builder()
         .name("fill-color")
         .description("The color of the marker.")
         .defaultValue(Color.MAGENTA)
         .build()
     );
-
     private final Setting<SettingColor> eColor = sgRender.add(new ColorSetting.Builder()
         .name("edge-color")
         .description("The color of the marker.")
         .defaultValue(Color.MAGENTA)
         .build()
     );
-
     private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
         .name("shape-mode")
         .defaultValue(ShapeMode.Both)
@@ -58,16 +54,20 @@ public class PointsAutoWalk extends Module {
         .description("Highlights selected points (when active baritone is not walk)")
         .build()
     );
-
+    boolean isPatching;
+    private List<BlockPos> points = new ArrayList<>();
+    private int index;
+    private IBaritoneProvider baritone;
 
 
     public PointsAutoWalk() {
         super(Addon.DBK, "points-auto-walk", "Points auto walk");
     }
+
     @EventHandler
     private void onRender3d(Render3DEvent event) {
         if (!highlight.get()) return;
-        if(points.isEmpty()) return;
+        if (points.isEmpty()) return;
         for (BlockPos pos : points) {
             event.renderer.box(pos, fColor.get(), eColor.get(), shapeMode.get(), 0);
         }
@@ -75,13 +75,14 @@ public class PointsAutoWalk extends Module {
     }
 
     @Override
-    public void onActivate(){
+    public void onActivate() {
         baritone = BaritoneAPI.getProvider();
         index = 0;
         isPatching = false;
     }
+
     @Override
-    public void onDeactivate(){
+    public void onDeactivate() {
         stopPatching();
         isPatching = false;
     }
@@ -93,19 +94,19 @@ public class PointsAutoWalk extends Module {
             parsePoints(pointsString.get());
         }
 
-        if(highlight.get()) return;
+        if (highlight.get()) return;
 
-        if(index >= points.size()) {
+        if (index >= points.size()) {
             info("Completed!");
             toggle();
             return;
         }
-        if(!isPatching){
+        if (!isPatching) {
             BlockPos pos = points.get(index);
             pathTo(pos);
             isPatching = true;
         }
-        if(hasReachedGoal()){
+        if (hasReachedGoal()) {
             index++;
             isPatching = false;
         } else if (!isPatching()) {
@@ -115,15 +116,17 @@ public class PointsAutoWalk extends Module {
 
     private void parsePoints(String pointsStr) {
         points.clear();
-        String[] pointsArray = pointsStr.split(";");
+        String[] pointsArray = pointsStr.split(separator.get());
         for (String point : pointsArray) {
             String[] split = point.trim().split(" ");
-            if(split.length != 3) return;
+            if (split.length != 3) return;
 
-            if(split[0].isEmpty() || split[1].isEmpty() || split[2].isEmpty()) continue;
-
-            BlockPos pos = new BlockPos(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-            points.add(pos);
+            try {
+                BlockPos pos = new BlockPos(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+                points.add(pos);
+            } catch (NumberFormatException e) {
+                info("Invalid coordinates: " + point);
+            }
         }
     }
 
@@ -133,6 +136,7 @@ public class PointsAutoWalk extends Module {
         GoalBlock goal = new GoalBlock(pos);
         baritone.getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(goal);
     }
+
     private void stopPatching() {
         if (baritone == null) return;
         baritone.getPrimaryBaritone().getPathingBehavior().cancelEverything();

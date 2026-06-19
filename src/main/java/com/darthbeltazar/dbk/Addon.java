@@ -1,6 +1,6 @@
-package com.example.addon;
+package com.darthbeltazar.dbk;
 
-import com.example.addon.modules.*;
+import com.darthbeltazar.dbk.modules.*;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -33,7 +33,7 @@ public class Addon extends MeteorAddon {
 
     @Override
     public String getPackage() {
-        return "com.example.addon";
+        return "com.darthbeltazar.dbk";
     }
 
     @Override

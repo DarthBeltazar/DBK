@@ -1,6 +1,6 @@
-package com.example.addon.modules;
+package com.darthbeltazar.dbk.modules;
 
-import com.example.addon.Addon;
+import com.darthbeltazar.dbk.Addon;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -56,7 +56,7 @@ public class AutoFirework extends Module {
 
         if (stopWhenFastEnough.get()) {
             double speed = mc.player.getVelocity().length();
-            if (speed*20 >= minSpeedThreshold.get()) return;
+            if (speed * 20 >= minSpeedThreshold.get()) return;
         }
 
         useFirework();
@@ -64,7 +64,7 @@ public class AutoFirework extends Module {
 
     private void useFirework() {
         FindItemResult firework = InvUtils.find(itemStack -> itemStack.getItem() == Items.FIREWORK_ROCKET);
-        if (!firework.found()){
+        if (!firework.found()) {
             info("No firework found");
             return;
         }
