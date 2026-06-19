@@ -37,8 +37,8 @@ public class PointsAutoWalk extends BoxHighlightSettings {
         .description("Highlights selected points (when active baritone is not walk)")
         .build()
     );
-    boolean isPatching;
     private final List<BlockPos> points = new ArrayList<>();
+    boolean isPatching;
     private int index;
     private IBaritoneProvider baritone;
 

@@ -18,6 +18,9 @@
       "com.darthbeltazar.dbk.Addon"
     ]
   },
+  "mixins": [
+    "mixins.dbk.json"
+  ],
   "custom": {
     "meteor-client:color": "0,25,255"
   },

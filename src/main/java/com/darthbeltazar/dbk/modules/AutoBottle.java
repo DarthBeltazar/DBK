@@ -1,6 +1,7 @@
 package com.darthbeltazar.dbk.modules;
 
 import com.darthbeltazar.dbk.Addon;
+import com.darthbeltazar.dbk.interfaces.IRaidCheck;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
@@ -13,10 +14,15 @@ import net.minecraft.item.Items;
 
 public class AutoBottle extends Module {
 
+    private static boolean isRaidActive = false;
     private boolean isDrinking;
 
     public AutoBottle() {
         super(Addon.DBK, "auto-bottle", "Automatically drinks ominous bottles for raid farming");
+    }
+
+    public static void setRaidActive(boolean raidActive) {
+        isRaidActive = raidActive;
     }
 
     @Override
@@ -24,19 +30,43 @@ public class AutoBottle extends Module {
         isDrinking = false;
     }
 
+    @Override
+    public void onDeactivate() {
+        isDrinking = false;
+        useBottle();
+    }
+
     @EventHandler
     private void onTick(TickEvent.Post event) {
         if (mc.player == null || mc.world == null) return;
 
+        updateIsDrinking();
+        useBottle();
+    }
+
+    private void updateIsDrinking() {
+        if (mc.player == null || mc.world == null) return;
+        updateIsRaidActive();
+        if (isRaidActive) {
+            isDrinking = false;
+            return;
+        }
         isDrinking = true;
+
         for (StatusEffectInstance effect : mc.player.getStatusEffects()) {
             if (effect.getEffectType().equals(StatusEffects.BAD_OMEN) || effect.getEffectType().equals(StatusEffects.RAID_OMEN)) {
                 isDrinking = false;
-                break;
+                return;
             }
         }
+    }
 
-        useBottle();
+    private void updateIsRaidActive() {
+        if (mc.inGameHud != null && mc.inGameHud.getBossBarHud() != null) {
+            IRaidCheck raidCheck = (IRaidCheck) mc.inGameHud.getBossBarHud();
+
+            isRaidActive = raidCheck.dbk$isRaidActive();
+        }
     }
 
     private void useBottle() {
@@ -53,6 +83,5 @@ public class AutoBottle extends Module {
         InvUtils.swap(bottle.slot(), false);
 
         mc.options.useKey.setPressed(true);
-
     }
 }
