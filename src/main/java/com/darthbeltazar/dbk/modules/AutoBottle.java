@@ -14,15 +14,11 @@ import net.minecraft.item.Items;
 
 public class AutoBottle extends Module {
 
-    private static boolean isRaidActive = false;
+    private boolean isRaidActive = false;
     private boolean isDrinking;
 
     public AutoBottle() {
         super(Addon.DBK, "auto-bottle", "Automatically drinks ominous bottles for raid farming");
-    }
-
-    public static void setRaidActive(boolean raidActive) {
-        isRaidActive = raidActive;
     }
 
     @Override
