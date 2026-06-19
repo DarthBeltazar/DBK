@@ -4,13 +4,13 @@ import baritone.api.BaritoneAPI;
 import baritone.api.IBaritoneProvider;
 import baritone.api.pathing.goals.GoalBlock;
 import com.darthbeltazar.dbk.Addon;
+import com.darthbeltazar.dbk.assets.BoxHighlightSettings;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.renderer.ShapeMode;
-import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.render.color.Color;
-import meteordevelopment.meteorclient.utils.render.color.SettingColor;
+import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.Setting;
+import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PointsAutoWalk extends Module {
+public class PointsAutoWalk extends BoxHighlightSettings {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
     private final SettingGroup sgRender = this.settings.createGroup("Render");
     private final Setting<String> pointsString = sgGeneral.add(new StringSetting.Builder()
@@ -32,30 +32,13 @@ public class PointsAutoWalk extends Module {
         .defaultValue(";")
         .build()
     );
-    private final Setting<SettingColor> fColor = sgRender.add(new ColorSetting.Builder()
-        .name("fill-color")
-        .description("The color of the marker.")
-        .defaultValue(Color.MAGENTA)
-        .build()
-    );
-    private final Setting<SettingColor> eColor = sgRender.add(new ColorSetting.Builder()
-        .name("edge-color")
-        .description("The color of the marker.")
-        .defaultValue(Color.MAGENTA)
-        .build()
-    );
-    private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
-        .name("shape-mode")
-        .defaultValue(ShapeMode.Both)
-        .build()
-    );
     private final Setting<Boolean> highlight = sgRender.add(new BoolSetting.Builder()
         .name("highlight")
         .description("Highlights selected points (when active baritone is not walk)")
         .build()
     );
     boolean isPatching;
-    private List<BlockPos> points = new ArrayList<>();
+    private final List<BlockPos> points = new ArrayList<>();
     private int index;
     private IBaritoneProvider baritone;
 

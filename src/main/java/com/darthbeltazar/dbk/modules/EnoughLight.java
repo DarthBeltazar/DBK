@@ -1,11 +1,11 @@
 package com.darthbeltazar.dbk.modules;
 
 import com.darthbeltazar.dbk.Addon;
+import com.darthbeltazar.dbk.assets.BoxHighlightSettings;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
@@ -15,7 +15,7 @@ import net.minecraft.world.LightType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnoughLight extends Module {
+public class EnoughLight extends BoxHighlightSettings {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
     private final SettingGroup sgRender = this.settings.createGroup("Render");
 
@@ -76,7 +76,7 @@ public class EnoughLight extends Module {
         .defaultValue(ShapeMode.Both)
         .build()
     );
-    private List<BlockPos> spawnBlocks = new ArrayList<BlockPos>();
+    private final List<BlockPos> spawnBlocks = new ArrayList<BlockPos>();
     private int timer = 0;
 
     public EnoughLight() {

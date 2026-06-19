@@ -1,14 +1,14 @@
 package com.darthbeltazar.dbk.modules;
 
 import com.darthbeltazar.dbk.Addon;
+import com.darthbeltazar.dbk.assets.BoxHighlightSettings;
 import meteordevelopment.meteorclient.events.meteor.MouseScrollEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.renderer.ShapeMode;
-import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.render.color.Color;
-import meteordevelopment.meteorclient.utils.render.color.SettingColor;
+import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.DoubleSetting;
+import meteordevelopment.meteorclient.settings.Setting;
+import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.BlockItem;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
@@ -19,9 +19,8 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class DBKAirPlace extends Module {
+public class DBKAirPlace extends BoxHighlightSettings {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
-    private final SettingGroup sgRender = this.settings.createGroup("Render");
 
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
         .name("range")
@@ -53,25 +52,6 @@ public class DBKAirPlace extends Module {
         .build()
     );
 
-    private final Setting<SettingColor> fColor = sgRender.add(new ColorSetting.Builder()
-        .name("fill-color")
-        .description("The color of the marker.")
-        .defaultValue(new Color(0, 0, 0, 0))
-        .build()
-    );
-
-    private final Setting<SettingColor> eColor = sgRender.add(new ColorSetting.Builder()
-        .name("edge-color")
-        .description("The color of the marker.")
-        .defaultValue(new Color(0, 0, 0, 200))
-        .build()
-    );
-
-    private final Setting<ShapeMode> shapeMode = sgRender.add(new EnumSetting.Builder<ShapeMode>()
-        .name("shape-mode")
-        .defaultValue(ShapeMode.Lines)
-        .build()
-    );
     private HitResult hitResult;
     private int delay;
 
