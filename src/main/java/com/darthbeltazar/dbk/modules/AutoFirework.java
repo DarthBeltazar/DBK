@@ -11,6 +11,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 
 public class AutoFirework extends Module {
+    private static final int TICKRATE = 20;
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
@@ -55,7 +56,7 @@ public class AutoFirework extends Module {
         tickCounter = 0;
 
         if (stopWhenFastEnough.get()) {
-            double speed = mc.player.getVelocity().length() * 20; //because velocity is in blocks per tick
+            double speed = mc.player.getVelocity().length() * TICKRATE; //because velocity is in blocks per tick
             if (speed >= minSpeedThreshold.get()) return;
         }
 

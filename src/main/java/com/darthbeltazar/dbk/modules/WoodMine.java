@@ -31,6 +31,7 @@ public class WoodMine extends Module {
         if (!isMining) {
             startMine();
         }
+        isMining = BaritoneAPI.getProvider().getPrimaryBaritone().getMineProcess().isActive();
     }
 
     @Override

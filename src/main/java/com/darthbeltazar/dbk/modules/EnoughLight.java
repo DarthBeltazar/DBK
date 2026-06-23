@@ -14,7 +14,6 @@ import java.util.List;
 
 public class EnoughLight extends BoxHighlightSettings {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
-    private final SettingGroup sgRender = this.settings.createGroup("Render");
 
 
     private final Setting<Integer> scanRadius = sgGeneral.add(new IntSetting.Builder()
@@ -53,7 +52,7 @@ public class EnoughLight extends BoxHighlightSettings {
         .build()
     );
 
-    private final List<BlockPos> spawnBlocks = new ArrayList<BlockPos>();
+    private final List<BlockPos> spawnBlocks = new ArrayList<>();
     private int timer = 0;
 
     public EnoughLight() {

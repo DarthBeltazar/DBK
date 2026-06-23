@@ -1,5 +1,5 @@
 /**
- * Template for modules with settings
+ * Template for modules with box settings
  */
 package com.darthbeltazar.dbk.assets;
 

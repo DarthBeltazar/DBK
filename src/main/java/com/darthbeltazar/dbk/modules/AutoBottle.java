@@ -1,6 +1,7 @@
 package com.darthbeltazar.dbk.modules;
 
 import com.darthbeltazar.dbk.Addon;
+import com.darthbeltazar.dbk.assets.RaidHelper;
 import com.darthbeltazar.dbk.interfaces.IRaidCheck;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -13,8 +14,6 @@ import net.minecraft.item.Items;
 
 
 public class AutoBottle extends Module {
-
-    private boolean isRaidActive = false;
     private boolean isDrinking;
 
     public AutoBottle() {
@@ -42,8 +41,7 @@ public class AutoBottle extends Module {
 
     private void updateIsDrinking() {
         if (mc.player == null || mc.world == null) return;
-        updateIsRaidActive();
-        if (isRaidActive) {
+        if (RaidHelper.isRaidActive()) {
             isDrinking = false;
             return;
         }
@@ -54,14 +52,6 @@ public class AutoBottle extends Module {
                 isDrinking = false;
                 return;
             }
-        }
-    }
-
-    private void updateIsRaidActive() {
-        if (mc.inGameHud != null && mc.inGameHud.getBossBarHud() != null) {
-            IRaidCheck raidCheck = (IRaidCheck) mc.inGameHud.getBossBarHud();
-
-            isRaidActive = raidCheck.dbk$isRaidActive();
         }
     }
 
