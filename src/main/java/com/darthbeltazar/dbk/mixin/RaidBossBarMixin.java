@@ -1,6 +1,6 @@
 /**
  * Mixin which determines whether a raid is currently underway on the boss bar
-*/
+ */
 package com.darthbeltazar.dbk.mixin;
 
 import com.darthbeltazar.dbk.interfaces.IRaidCheck;

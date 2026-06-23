@@ -4,7 +4,10 @@ import com.darthbeltazar.dbk.Addon;
 import com.darthbeltazar.dbk.assets.BoxHighlightSettings;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.*;
+import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.IntSetting;
+import meteordevelopment.meteorclient.settings.Setting;
+import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.LightType;
@@ -56,7 +59,7 @@ public class EnoughLight extends BoxHighlightSettings {
     private int timer = 0;
 
     public EnoughLight() {
-        super(Addon.DBK, "enough-light", "An module, which highlights mob spawn places");
+        super(Addon.DBK, "enough-light", "Highlights mob spawn places");
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.darthbeltazar.dbk.modules;
 
 import com.darthbeltazar.dbk.Addon;
 import com.darthbeltazar.dbk.assets.RaidHelper;
-import com.darthbeltazar.dbk.interfaces.IRaidCheck;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
