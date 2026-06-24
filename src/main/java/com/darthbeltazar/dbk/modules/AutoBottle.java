@@ -7,9 +7,9 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.Items;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.Items;
 
 
 public class AutoBottle extends Module {
@@ -32,22 +32,22 @@ public class AutoBottle extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        if (mc.player == null || mc.world == null) return;
+        if (mc.player == null || mc.level == null) return;
 
         updateIsDrinking();
         useBottle();
     }
 
     private void updateIsDrinking() {
-        if (mc.player == null || mc.world == null) return;
+        if (mc.player == null || mc.level == null) return;
         if (RaidHelper.isRaidActive()) {
             isDrinking = false;
             return;
         }
         isDrinking = true;
 
-        for (StatusEffectInstance effect : mc.player.getStatusEffects()) {
-            if (effect.getEffectType().equals(StatusEffects.BAD_OMEN) || effect.getEffectType().equals(StatusEffects.RAID_OMEN)) {
+        for (MobEffectInstance effect : mc.player.getActiveEffects()) {
+            if (effect.getEffect().is(MobEffects.BAD_OMEN) || effect.getEffect().is(MobEffects.RAID_OMEN)) {
                 isDrinking = false;
                 return;
             }
@@ -56,7 +56,7 @@ public class AutoBottle extends Module {
 
     private void useBottle() {
         if (!isDrinking) {
-            mc.options.useKey.setPressed(false);
+            mc.options.keyUse.setDown(false);
             InvUtils.swapBack();
             return;
         }
@@ -68,6 +68,6 @@ public class AutoBottle extends Module {
         }
         InvUtils.swap(bottle.slot(), true);
 
-        mc.options.useKey.setPressed(true);
+        mc.options.keyUse.setDown(true);
     }
 }

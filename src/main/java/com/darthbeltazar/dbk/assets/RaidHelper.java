@@ -6,8 +6,8 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class RaidHelper {
     public static boolean isRaidActive() {
-        if (mc.inGameHud != null && mc.inGameHud.getBossBarHud() != null) {
-            IRaidCheck raidCheck = (IRaidCheck) mc.inGameHud.getBossBarHud();
+        if (mc.gui != null && mc.gui.getBossOverlay() != null) {
+            IRaidCheck raidCheck = (IRaidCheck) mc.gui.getBossOverlay();
 
             return raidCheck.dbk$isRaidActive();
         }

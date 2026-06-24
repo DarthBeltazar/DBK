@@ -10,14 +10,14 @@ import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.item.BlockItem;
-import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class DBKAirPlace extends BoxHighlightSettings {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
@@ -68,26 +68,26 @@ public class DBKAirPlace extends BoxHighlightSettings {
     private void onTick(TickEvent.Post event) {
         delay++;
         if (mc.player == null || mc.getCameraEntity() == null) return;
-        hitResult = mc.getCameraEntity().raycast(range.get(), 0, false);
-        if (!(hitResult instanceof BlockHitResult blockHitResult) || !(mc.player.getMainHandStack().getItem() instanceof BlockItem))
+        hitResult = mc.getCameraEntity().pick(range.get(), 0, false);
+        if (!(hitResult instanceof BlockHitResult blockHitResult) || !(mc.player.getMainHandItem().getItem() instanceof BlockItem))
             return;
 
         if (delay < placeDelay.get()) return;
 
-        if (mc.options.useKey.isPressed()) {
-            mc.player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, new BlockPos(0, 0, 0), Direction.DOWN));
-            mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(Hand.OFF_HAND, blockHitResult, mc.player.currentScreenHandler.getRevision() + 2));
-            mc.player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, new BlockPos(0, 0, 0), Direction.DOWN));
+        if (mc.options.keyUse.isDown()) {
+            mc.player.connection.send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND, new BlockPos(0, 0, 0), Direction.DOWN));
+            mc.player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.OFF_HAND, blockHitResult, mc.player.containerMenu.getStateId() + 2));
+            mc.player.connection.send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND, new BlockPos(0, 0, 0), Direction.DOWN));
 
-            mc.player.swingHand(Hand.MAIN_HAND);
+            mc.player.swing(InteractionHand.MAIN_HAND);
             delay = 0;
         }
     }
 
     @EventHandler
     private void onRender3d(Render3DEvent event) {
-        if (mc.world == null) return;
-        if (!render.get() || !(hitResult instanceof BlockHitResult blockHitResult) || !mc.world.getBlockState(blockHitResult.getBlockPos()).isReplaceable())
+        if (mc.level == null) return;
+        if (!render.get() || !(hitResult instanceof BlockHitResult blockHitResult) || !mc.level.getBlockState(blockHitResult.getBlockPos()).canBeReplaced())
             return;
         event.renderer.box(blockHitResult.getBlockPos(), fColor.get(), eColor.get(), shapeMode.get(), 0);
     }

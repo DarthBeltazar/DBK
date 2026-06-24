@@ -12,8 +12,7 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,10 +142,10 @@ public class PointsAutoWalk extends BoxHighlightSettings {
         var goal = pathingBehavior.getGoal();
         if (goal == null) return false;
 
-        var player = MinecraftClient.getInstance().player;
+        var player = mc.player;
         if (player == null) return false;
 
-        BlockPos playerPos = player.getBlockPos();
+        BlockPos playerPos = player.getOnPos();
         return goal.isInGoal(playerPos);
     }
 }

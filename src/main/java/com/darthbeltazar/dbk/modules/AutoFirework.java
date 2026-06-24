@@ -7,8 +7,8 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.Items;
 
 public class AutoFirework extends Module {
     private static final int TICKRATE = 20;
@@ -48,15 +48,15 @@ public class AutoFirework extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        if (mc.player == null || mc.world == null) return;
-        if (!mc.player.isGliding()) return;
+        if (mc.player == null || mc.level == null) return;
+        if (!mc.player.isFallFlying()) return;
 
         tickCounter++;
         if (tickCounter < delay.get()) return;
         tickCounter = 0;
 
         if (stopWhenFastEnough.get()) {
-            double speed = mc.player.getVelocity().length() * TICKRATE; //because velocity is in blocks per tick
+            double speed = mc.player.getDeltaMovement().length() * TICKRATE; //because velocity is in blocks per tick
             if (speed >= minSpeedThreshold.get()) return;
         }
 
@@ -70,8 +70,8 @@ public class AutoFirework extends Module {
             return;
         }
         InvUtils.swap(firework.slot(), true);
-        if (mc.interactionManager != null) {
-            mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+        if (mc.gameMode != null) {
+            mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
         }
         InvUtils.swapBack();
     }

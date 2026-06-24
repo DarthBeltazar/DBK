@@ -6,7 +6,7 @@ import com.darthbeltazar.dbk.Addon;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 
 
 public class WoodMine extends Module {
@@ -24,7 +24,7 @@ public class WoodMine extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        if (mc.player == null || mc.world == null) return;
+        if (mc.player == null || mc.level == null) return;
         if (mineProcess == null || BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().isPathing()) {
             return;
         }

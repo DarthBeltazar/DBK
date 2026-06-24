@@ -9,8 +9,8 @@ import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.LightType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LightLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,29 +77,29 @@ public class EnoughLight extends BoxHighlightSettings {
         spawnBlocks.clear();
         int r = scanRadius.get();
         int h = scanHeight.get();
-        for (BlockPos pos : BlockPos.iterateOutwards(mc.player.getBlockPos(), r, h, r)) {
-            if (!mc.world.isInBuildLimit(pos)) {
+        for (BlockPos pos : BlockPos.withinManhattan(mc.player.getOnPos(), r, h, r)) {
+            if (mc.level.isOutsideBuildHeight(pos)) {
                 continue;
             }
-            if (!mc.world.isAir(pos) || !mc.world.getBlockState(pos.down()).isSolidBlock(mc.world, pos.down())) {
+            if (!mc.level.getBlockState(pos).isAir() || !mc.level.getBlockState(pos.below()).isSolid()) {
                 continue;
             }
             if (checkAir.get()) {
-                if (!mc.world.isAir(pos.up())) {
+                if (!mc.level.getBlockState(pos.above()).isAir()) {
                     continue;
                 }
             }
-            if (mc.world.getLightLevel(LightType.BLOCK, pos) > 0) {
+            if (mc.level.getBrightness(LightLayer.BLOCK, pos) > 0) {
                 continue;
             }
 
-            spawnBlocks.add(pos.toImmutable());
+            spawnBlocks.add(pos.immutable());
         }
     }
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        if (mc.player == null || mc.world == null) return;
+        if (mc.player == null || mc.level == null) return;
         if (timer > updRate.get()) {
             updateBlockPos();
             timer = 0;
