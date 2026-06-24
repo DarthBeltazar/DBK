@@ -12,12 +12,12 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 
 public class DBKAirPlace extends BoxHighlightSettings {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();

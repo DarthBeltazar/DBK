@@ -2,6 +2,7 @@ package com.darthbeltazar.dbk.modules;
 
 import com.darthbeltazar.dbk.Addon;
 import com.darthbeltazar.dbk.assets.BoxHighlightSettings;
+import com.mojang.authlib.minecraft.client.MinecraftClient;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
