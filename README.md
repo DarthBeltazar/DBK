@@ -15,7 +15,7 @@ Automatically drinks ominous bottles for raid farming
 ### AutoFirework
 Automatically uses fireworks to boost elytra flight
 ### DBKAirPlace
-Places blocks in air (DBK needs because AipPlace already exist in Meteor client).
+Places blocks in air (DBK needs because AirPlace already exists in Meteor client).
 Its `baritone-air-place` setting lets Baritone place blocks in the air too, see [Baritone air place](#baritone-air-place).
 ### EnoughLight
 Highlights mob spawn places (by light level and blocks around)
