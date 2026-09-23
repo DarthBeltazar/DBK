@@ -17,8 +17,9 @@ repositories {
         name = "meteor-maven-snapshots"
         url = uri("https://maven.meteordev.org/snapshots")
     }
-    flatDir {
-        dirs("baritoneAPI-lib") //baritone api from https://github.com/cabaletta/baritone
+    maven {
+        name = "babbaj"
+        url = uri("https://babbaj.github.io/maven/")
     }
 }
 
@@ -31,8 +32,10 @@ dependencies {
     // Meteor
     modImplementation("meteordevelopment:meteor-client:${properties["minecraft_version"] as String}-SNAPSHOT")
 
-    // Baritone
-    modImplementation("baritone-api-fabric:baritone-api-fabric:1.13.1")
+    // Baritone (Meteor's build, includes baritone.api)
+    modImplementation("meteordevelopment:baritone:${properties["minecraft_version"] as String}-SNAPSHOT")
+    // Nested inside the Baritone jar but not declared in its pom, so the dev client can't find it without this
+    runtimeOnly("dev.babbaj:nether-pathfinder:1.4.1")
 }
 
 tasks {
