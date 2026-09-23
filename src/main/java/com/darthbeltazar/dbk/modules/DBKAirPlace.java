@@ -1,6 +1,7 @@
 package com.darthbeltazar.dbk.modules;
 
 import com.darthbeltazar.dbk.Addon;
+import com.darthbeltazar.dbk.utils.BaritoneAirPlace;
 import com.darthbeltazar.dbk.utils.BoxHighlightSettings;
 import meteordevelopment.meteorclient.events.meteor.MouseScrollEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
@@ -10,6 +11,7 @@ import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,6 +26,7 @@ public class DBKAirPlace extends BoxHighlightSettings {
     private static final double MAX_RANGE = 5.5;
 
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
+    private final SettingGroup sgBaritone = this.settings.createGroup("Baritone");
 
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
         .name("range")
@@ -51,6 +54,17 @@ public class DBKAirPlace extends BoxHighlightSettings {
         .build()
     );
 
+    private final Setting<Boolean> baritoneAirPlace = sgBaritone.add(new BoolSetting.Builder()
+        .name("baritone-air-place")
+        .description("Lets Baritone place blocks in the air while pathing and building. Needs DBK's Baritone fork.")
+        .defaultValue(false)
+        .onChanged(value -> {
+            // Also fires while Meteor loads its config at startup; onActivate syncs on joining a world anyway
+            if (Utils.canUpdate()) syncBaritone(isActive() && value);
+        })
+        .build()
+    );
+
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
         .name("render")
         .defaultValue(true)
@@ -67,6 +81,19 @@ public class DBKAirPlace extends BoxHighlightSettings {
     @Override
     public void onActivate() {
         delay = 0;
+        syncBaritone(baritoneAirPlace.get());
+    }
+
+    @Override
+    public void onDeactivate() {
+        syncBaritone(false);
+    }
+
+    // The checkbox (while the module is on) decides Baritone's airPlace; the fork re-plans the current path when it changes
+    private void syncBaritone(boolean enable) {
+        if (!BaritoneAirPlace.set(enable) && enable) {
+            warning("This Baritone has no airPlace setting, baritone-air-place needs DBK's Baritone fork");
+        }
     }
 
     @EventHandler
