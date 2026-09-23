@@ -1,12 +1,13 @@
 package com.darthbeltazar.dbk.modules;
 
 import com.darthbeltazar.dbk.Addon;
-import com.darthbeltazar.dbk.assets.BoxHighlightSettings;
+import com.darthbeltazar.dbk.utils.BoxHighlightSettings;
 import meteordevelopment.meteorclient.events.meteor.MouseScrollEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
+import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.orbit.EventHandler;
@@ -20,18 +21,22 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class DBKAirPlace extends BoxHighlightSettings {
+    private static final double MAX_RANGE = 5.5;
+
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
 
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
         .name("range")
         .min(0)
-        .sliderMax(5.5)
+        .max(MAX_RANGE)
+        .sliderMax(MAX_RANGE)
         .defaultValue(5)
         .build()
     );
 
-    private final Setting<Double> placeDelay = sgGeneral.add(new DoubleSetting.Builder()
+    private final Setting<Integer> placeDelay = sgGeneral.add(new IntSetting.Builder()
         .name("delay")
+        .description("Delay in ticks between placements.")
         .min(0)
         .sliderMax(20)
         .defaultValue(3)
@@ -40,7 +45,7 @@ public class DBKAirPlace extends BoxHighlightSettings {
 
     private final Setting<Double> scrollSensitivity = sgGeneral.add(new DoubleSetting.Builder()
         .name("scroll-sensitivity")
-        .description("Allows you to change range.")
+        .description("Allows you to change range with the scroll wheel while holding a block.")
         .defaultValue(1)
         .min(0)
         .build()
@@ -94,11 +99,11 @@ public class DBKAirPlace extends BoxHighlightSettings {
 
     @EventHandler
     private void onMouseScroll(MouseScrollEvent event) {
-        if (scrollSensitivity.get() > 0 && isActive()) {
-            range.set(range.get() + event.value * 0.25 * (scrollSensitivity.get()));
-            if (range.get() > 5.5) range.set(5.5);
+        if (mc.player == null || scrollSensitivity.get() <= 0) return;
+        // Only hijack the wheel while holding a block, so hotbar scrolling still works otherwise
+        if (!(mc.player.getMainHandItem().getItem() instanceof BlockItem)) return;
 
-            event.cancel();
-        }
+        range.set(Math.clamp(range.get() + event.value * 0.25 * scrollSensitivity.get(), 0, MAX_RANGE));
+        event.cancel();
     }
 }

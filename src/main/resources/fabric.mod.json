@@ -3,12 +3,11 @@
   "id": "darthbeltazarskit",
   "version": "${version}",
   "name": "DarthBeltazar's kit",
-  "description": "An Meteor addon",
+  "description": "A Meteor Client addon",
   "authors": [
     "DarthBeltazar"
   ],
   "contact": {
-    "phone": "8 800 555 35 35",
     "sources": "https://github.com/DarthBeltazar/DBK"
   },
   "icon": "assets/dbk/icon.png",

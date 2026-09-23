@@ -1,10 +1,11 @@
 package com.darthbeltazar.dbk.modules;
 
 import baritone.api.BaritoneAPI;
-import baritone.api.IBaritoneProvider;
+import baritone.api.IBaritone;
 import baritone.api.pathing.goals.GoalBlock;
+import baritone.api.process.ICustomGoalProcess;
 import com.darthbeltazar.dbk.Addon;
-import com.darthbeltazar.dbk.assets.BoxHighlightSettings;
+import com.darthbeltazar.dbk.utils.BoxHighlightSettings;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
@@ -16,30 +17,34 @@ import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class PointsAutoWalk extends BoxHighlightSettings {
+    private static final int MAX_ATTEMPTS = 3;
+
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
-    private final SettingGroup sgRender = this.settings.createGroup("Render");
     private final Setting<String> pointsString = sgGeneral.add(new StringSetting.Builder()
         .name("points")
         .description("Coordinates in format x y z (separator) x y z")
+        .onChanged(value -> restart())
         .build()
     );
     private final Setting<String> separator = sgGeneral.add(new StringSetting.Builder()
         .name("separator")
         .description("Symbol which separates coordinates")
         .defaultValue(";")
+        .onChanged(value -> restart())
         .build()
     );
     private final Setting<Boolean> highlight = sgRender.add(new BoolSetting.Builder()
         .name("highlight")
-        .description("Highlights selected points (when active baritone is not walk)")
+        .description("Highlights selected points")
         .build()
     );
     private final List<BlockPos> points = new ArrayList<>();
-    boolean isPatching;
     private int index;
-    private IBaritoneProvider baritone;
+    private int attempts;
+    private IBaritone baritone;
 
 
     public PointsAutoWalk() {
@@ -49,103 +54,87 @@ public class PointsAutoWalk extends BoxHighlightSettings {
     @EventHandler
     private void onRender3d(Render3DEvent event) {
         if (!highlight.get()) return;
-        if (points.isEmpty()) return;
         for (BlockPos pos : points) {
             event.renderer.box(pos, fColor.get(), eColor.get(), shapeMode.get(), 0);
         }
-
     }
 
     @Override
     public void onActivate() {
-        if (BaritoneAPI.getProvider().getPrimaryBaritone() == null) {
+        baritone = BaritoneAPI.getProvider().getPrimaryBaritone();
+        if (baritone == null) {
             error("Baritone is not discovered. Please install baritone");
             toggle();
             return;
         }
-        baritone = BaritoneAPI.getProvider();
+        parsePoints();
+        if (points.isEmpty()) {
+            error("No valid points set");
+            toggle();
+            return;
+        }
         index = 0;
-        isPatching = false;
+        attempts = 0;
     }
 
     @Override
     public void onDeactivate() {
-        stopPatching();
-        isPatching = false;
+        if (baritone != null) {
+            baritone.getPathingBehavior().cancelEverything();
+        }
+        baritone = null;
     }
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        if (pointsString.get().isEmpty() || !isActive()) return;
-        if (!isPatching) {
-            parsePoints(pointsString.get());
-        }
-
-        if (highlight.get()) return;
+        if (mc.player == null || baritone == null) return;
 
         if (index >= points.size()) {
             info("Completed!");
             toggle();
             return;
         }
-        if (!isPatching) {
-            BlockPos pos = points.get(index);
-            pathTo(pos);
-            isPatching = true;
-        }
-        if (hasReachedGoal()) {
+
+        ICustomGoalProcess process = baritone.getCustomGoalProcess();
+        if (process.isActive()) return;
+
+        // Baritone is idle: either the point is reached or pathing to it failed
+        BlockPos target = points.get(index);
+        if (mc.player.blockPosition().equals(target)) {
             index++;
-            isPatching = false;
-        } else if (!isPatching()) {
-            isPatching = false;
+            attempts = 0;
+            return;
         }
+        if (attempts >= MAX_ATTEMPTS) {
+            warning("Can't reach %d %d %d, skipping", target.getX(), target.getY(), target.getZ());
+            index++;
+            attempts = 0;
+            return;
+        }
+        attempts++;
+        process.setGoalAndPath(new GoalBlock(target));
     }
 
-    private void parsePoints(String pointsStr) {
-        points.clear();
-        String[] pointsArray = pointsStr.split(separator.get());
-        for (String point : pointsArray) {
-            String[] split = point.trim().split(" ");
-            if (split.length != 3) return;
+    private void restart() {
+        if (!isActive() || baritone == null) return;
+        baritone.getPathingBehavior().cancelEverything();
+        parsePoints();
+        index = 0;
+        attempts = 0;
+    }
 
+    private void parsePoints() {
+        points.clear();
+        String sep = separator.get().isEmpty() ? ";" : separator.get();
+        for (String point : pointsString.get().split(Pattern.quote(sep))) {
+            if (point.isBlank()) continue;
+            String[] split = point.trim().split("\\s+");
             try {
-                BlockPos pos = new BlockPos(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-                points.add(pos);
+                if (split.length != 3) throw new NumberFormatException();
+                points.add(new BlockPos(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2])));
             } catch (NumberFormatException e) {
-                info("Invalid coordinates: " + point);
+                warning("Invalid coordinates: " + point.trim());
             }
         }
-    }
-
-    private void pathTo(BlockPos pos) {
-        if (baritone == null) return;
-
-        GoalBlock goal = new GoalBlock(pos);
-        baritone.getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(goal);
-    }
-
-    private void stopPatching() {
-        if (baritone == null) return;
-        baritone.getPrimaryBaritone().getPathingBehavior().cancelEverything();
-    }
-
-    public boolean isPatching() {
-        if (baritone == null) return false;
-        return baritone.getPrimaryBaritone().getPathingBehavior().isPathing();
-    }
-
-    public boolean hasReachedGoal() {
-        if (baritone == null) return false;
-        var pathingBehavior = baritone.getPrimaryBaritone().getPathingBehavior();
-        if (!pathingBehavior.isPathing()) return false;
-
-        var goal = pathingBehavior.getGoal();
-        if (goal == null) return false;
-
-        var player = mc.player;
-        if (player == null) return false;
-
-        BlockPos playerPos = player.getOnPos();
-        return goal.isInGoal(playerPos);
     }
 }

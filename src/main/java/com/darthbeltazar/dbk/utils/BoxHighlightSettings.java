@@ -1,7 +1,7 @@
 /**
  * Template for modules with box settings
  */
-package com.darthbeltazar.dbk.assets;
+package com.darthbeltazar.dbk.utils;
 
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.ColorSetting;

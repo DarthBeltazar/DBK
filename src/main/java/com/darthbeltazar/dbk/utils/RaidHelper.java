@@ -1,4 +1,4 @@
-package com.darthbeltazar.dbk.assets;
+package com.darthbeltazar.dbk.utils;
 
 import com.darthbeltazar.dbk.interfaces.IRaidCheck;
 
