@@ -1,5 +1,7 @@
 # DBK (Darth Beltazar's kit)
 
+**English** | [Русский](README.ru.md)
+
 A meteor addon for minecraft 1.21.4 (based on https://github.com/MeteorDevelopment/meteor-addon-template)
 
 ## How to use
