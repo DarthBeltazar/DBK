@@ -1,5 +1,7 @@
 # DBK (Darth Beltazar's kit)
 
+**English** | [Русский](README.ru.md)
+
 A meteor addon for minecraft 1.21.4 (based on https://github.com/MeteorDevelopment/meteor-addon-template)
 
 ## How to use
@@ -13,7 +15,7 @@ Automatically drinks ominous bottles for raid farming
 ### AutoFirework
 Automatically uses fireworks to boost elytra flight
 ### DBKAirPlace
-Places blocks in air (DBK needs because AipPlace already exist in Meteor client).
+Places blocks in air (DBK needs because AirPlace already exists in Meteor client).
 Its `baritone-air-place` setting lets Baritone place blocks in the air too, see [Baritone air place](#baritone-air-place).
 ### EnoughLight
 Highlights mob spawn places (by light level and blocks around)
@@ -34,15 +36,17 @@ The server has to accept air placement (same as for DBKAirPlace itself).
 
 This needs [DBK's Baritone fork](https://github.com/DarthBeltazar/baritone/tree/dbk-airplace) instead of Meteor's Baritone.
 
-1. Build the fork (Minecraft 1.21.4, branch `dbk-airplace`, JDK 21):
-   ```
-   git clone -b dbk-airplace https://github.com/DarthBeltazar/baritone.git
-   cd baritone
-   ./gradlew :fabric:build
-   ```
-2. Put `fabric/build/libs/baritone-unoptimized-fabric-<version>.jar` in the mods folder.
+1. Download `baritone-unoptimized-fabric-<version>.jar` from the [fork's releases](https://github.com/DarthBeltazar/baritone/releases) and put it in the mods folder.
    Use the **unoptimized** jar: the standalone one is obfuscated, and Meteor needs Baritone's real class names.
-3. Remove Meteor's Baritone jar (`baritone-meteor`) from the mods folder: both contain the same `baritone` packages.
+2. Remove Meteor's Baritone jar (`baritone-meteor`) from the mods folder: both contain the same `baritone` packages.
+
+To build it yourself instead (JDK 21), the jar ends up in `fabric/build/libs/`:
+```
+git clone -b dbk-airplace https://github.com/DarthBeltazar/baritone.git
+cd baritone
+./gradlew :fabric:build
+```
+A new release is published by pushing a `v<version>-dbk.<n>` tag in the fork (e.g. `v1.13.1-dbk.2`), see its `.github/workflows/dbk_release.yml`.
 
 DBK still works with Meteor's Baritone, just without this feature: turning the setting on then prints a warning.
 
